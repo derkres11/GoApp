@@ -1,6 +1,6 @@
 package apiserver
 
-type APIServer struct{
+type APIServer struct {
 	config *Config
 }
 
