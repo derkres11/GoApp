@@ -1,6 +1,8 @@
 package store
 
-import "TestApi/internal/app/model"
+import (
+	"TestApi/internal/app/model"
+)
 
 type UserRepository struct {
 	store *Store
@@ -8,12 +10,22 @@ type UserRepository struct {
 
 func (r *UserRepository) Create(u *model.User) (*model.User, error) {
 
-	r.store.db.QueryRow("INSERT INTO user(email, encrypted_password) VALUES ($1, $2) RETURNING id")
+	if err := r.store.db.QueryRow("INSERT INTO user(email, encrypted_password) VALUES ($1, $2) RETURNING id", u.Email, u.EncryptedPassword).Scan(&u.ID); err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return u, nil
 
 }
 
 func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
-	return nil, nil
+	u := &model.User{}
+	if err := r.store.db.QueryRow("SELECT id, email, encrypted_password FROM users WHERE email = $1", email).Scan(
+		&u.ID,
+		&u.Email,
+		&u.EncryptedPassword,
+	); err != nil{
+		return nil, err
+	}
+	return u, nil
 }
