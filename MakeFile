@@ -9,3 +9,16 @@ test:
 	go test -v -timeout 30s ./ ...
 
 .DEFAULT_GOAL := build
+
+
+.PHONY: tidy
+tidy:
+	go mod tidy
+
+.DEFAULT_GOAL := build
+
+
+.PHONY: pprof
+pprof:
+	pprof
+
